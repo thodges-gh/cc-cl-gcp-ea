@@ -1,0 +1,9 @@
+{
+  "name": "cc-adapter",
+  "version": "1.0.0",
+  "author": "Thomas Hodges",
+  "license": "MIT",
+  "dependencies": {
+    "request": "^2.87.0"
+  }
+}

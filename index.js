@@ -1,14 +1,14 @@
 let request = require('request');
 
-exports.gcpservice = (req, res) => {
+const createRequest = (input, callback) => {
     let url = "https://min-api.cryptocompare.com/data/";
-    const endpoint = req.body.data.endpoint || "";
+    const endpoint = input.data.endpoint || "";
     url = url + endpoint;
-    const fsyms = req.body.data.fsyms || "";
-    const fsym = req.body.data.fsym || "";
-    const tsyms = req.body.data.tsyms || "";
-    const tsym = req.body.data.tsym || "";
-    const exchange = req.body.data.exchange || "";
+    const fsyms = input.data.fsyms || "";
+    const fsym = input.data.fsym || "";
+    const tsyms = input.data.tsyms || "";
+    const tsym = input.data.tsym || "";
+    const exchange = input.data.exchange || "";
     let requestObj;
     switch (endpoint) {
         case "price":
@@ -44,19 +44,33 @@ exports.gcpservice = (req, res) => {
         json: true
     }
     request(options, (error, response, body) => {
-        if (error || response.statusCode >= 400) {
-            let errorData = {
-                jobRunID: req.body.id,
+        if (error || response.statusCode >= 400 || body.Response == "Error") {
+            callback(response.statusCode, {
+                jobRunID: input.id,
                 status: "errored",
-                error: error
-            }
-            res.status(response.statusCode).send(errorData);
+                error: body.Message,
+                statusCode: response.statusCode
+            });
         } else {
-            let returnData = {
-                jobRunID: req.body.id,
-                data: body
-            }
-            res.status(response.statusCode).send(returnData);
+            callback(response.statusCode, {
+                jobRunID: input.id,
+                data: body,
+                statusCode: response.statusCode
+            });
         }
     });
+}
+
+exports.gcpservice = (req, res) => {
+    createRequest(req.body, (statusCode, data) => {
+        res.status(statusCode).send(data);
+    });
 };
+
+exports.handler = (event, context, callback) => {
+    createRequest(event, (statusCode, data) => {
+        callback(null, data);
+    });
+}
+
+module.exports.createRequest = createRequest;

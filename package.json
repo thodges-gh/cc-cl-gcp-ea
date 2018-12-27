@@ -3,6 +3,9 @@
   "version": "2.0.0",
   "author": "Thomas Hodges (thomas@smartcontract.com)",
   "license": "MIT",
+  "scripts": {
+    "test": "./node_modules/.bin/_mocha  --timeout 0"
+  },
   "dependencies": {
     "request": "^2.87.0"
   },

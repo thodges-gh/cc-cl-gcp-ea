@@ -2,15 +2,15 @@ let request = require('request');
 
 const createRequest = (input, callback) => {
     let url = "https://min-api.cryptocompare.com/data/";
-    const endpoint = input.data.endpoint || "";
-    url = url + endpoint;
+    const endpoint = input.data.endpoint || "price";
+	url = url + endpoint;
+	const fsym = input.data.fsym || input.data.coin || "";
+    const tsyms = input.data.tsyms || input.data.market || "";
     let queryObj = {
-        fsym: input.data.fsym,
-        fsyms: input.data.fsyms,
-        tsym: input.data.tsym,
-        tsyms: input.data.tsyms,
-        exchange: input.data.exchange
-    }
+        fsym: fsym,
+		tsyms: tsyms,
+		apikey: process.env.API_KEY
+    };
     for (let key in queryObj) {
         if (typeof queryObj[key] === "undefined") {
             delete queryObj[key];
@@ -32,7 +32,8 @@ const createRequest = (input, callback) => {
         } else {
             callback(response.statusCode, {
                 jobRunID: input.id,
-                data: body,
+				data: body,
+				result: body[tsyms],
                 statusCode: response.statusCode
             });
         }

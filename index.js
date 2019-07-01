@@ -26,7 +26,8 @@ const createRequest = (input, callback) => {
             callback(response.statusCode, {
                 jobRunID: input.id,
                 status: "errored",
-                error: body.Message,
+				error: body,
+				errorMessage: body.Message,
                 statusCode: response.statusCode
             });
         } else {

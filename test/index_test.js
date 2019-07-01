@@ -39,7 +39,8 @@ describe('createRequest', () => {
       createRequest(badReq, (statusCode, data) => {
         assert.equal(statusCode, 200);
         assert.equal(data.jobRunID, jobID);
-        assert.equal(data.status, "errored");
+		assert.equal(data.status, "errored");
+		assert.isNotEmpty(data.errorMessage);
         done();
       });
     });

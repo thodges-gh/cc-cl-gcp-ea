@@ -85,4 +85,47 @@ describe('createRequest', () => {
       });
     });
   });
+
+  context('with endpoint = generateAvg', () => {
+    const req = {
+      id: jobID,
+      data: {
+        endpoint: "generateAvg",
+        fsym: "ETH",
+		tsym: "USD",
+		e: "Bitfinex"
+      }
+    };
+
+    it('returns data to the node', (done) => {
+      createRequest(req, (statusCode, data) => {
+        assert.equal(statusCode, 200);
+        assert.equal(data.jobRunID, jobID);
+		assert.isNotEmpty(data.data);
+		assert.isNumber(data.result);
+        done();
+      });
+    });
+  });
+
+  context('with endpoint = dayAvg', () => {
+    const req = {
+      id: jobID,
+      data: {
+        endpoint: "dayAvg",
+        fsym: "ETH",
+		tsym: "USD"
+      }
+    };
+
+    it('returns data to the node', (done) => {
+      createRequest(req, (statusCode, data) => {
+        assert.equal(statusCode, 200);
+        assert.equal(data.jobRunID, jobID);
+		assert.isNotEmpty(data.data);
+		assert.isNumber(data.result);
+        done();
+      });
+    });
+  });
 });

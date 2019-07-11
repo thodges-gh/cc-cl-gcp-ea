@@ -5,14 +5,18 @@ const createRequest = (input, callback) => {
     const endpoint = input.data.endpoint || "price";
 	url = url + endpoint;
 	const fsym = input.data.fsym || input.data.coin || "";
-    const tsyms = input.data.tsyms || input.data.market || "";
+	const tsyms = input.data.tsyms || input.data.market || "";
+	const tsym = input.data.tsym || input.data.market || "";
+	const exchange = input.data.e || input.data.exchange || "";
     let queryObj = {
         fsym: fsym,
 		tsyms: tsyms,
+		tsym: tsym,
+		e: exchange,
 		apikey: process.env.API_KEY
     };
     for (let key in queryObj) {
-        if (typeof queryObj[key] === "undefined") {
+        if (queryObj[key] === "") {
             delete queryObj[key];
         }
     }
@@ -20,7 +24,7 @@ const createRequest = (input, callback) => {
         url: url,
         qs: queryObj,
         json: true
-    }
+	}
     request(options, (error, response, body) => {
         if (error || response.statusCode >= 400 || body.Response == "Error") {
             callback(response.statusCode, {
@@ -34,7 +38,7 @@ const createRequest = (input, callback) => {
             callback(response.statusCode, {
                 jobRunID: input.id,
 				data: body,
-				result: body[tsyms],
+				result: body[tsyms] || body[tsym] || body.RAW.PRICE,
                 statusCode: response.statusCode
             });
         }

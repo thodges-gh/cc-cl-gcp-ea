@@ -5,11 +5,13 @@ const createRequest = (input, callback) => {
     const endpoint = input.data.endpoint || "price";
 	url = url + endpoint;
 	const fsym = input.data.fsym || input.data.coin || "";
+	const fsyms = input.data.fsyms || input.data.coin || "";
 	const tsyms = input.data.tsyms || input.data.market || "";
 	const tsym = input.data.tsym || input.data.market || "";
 	const exchange = input.data.e || input.data.exchange || "";
     let queryObj = {
-        fsym: fsym,
+		fsym: fsym,
+		fsyms: fsyms,
 		tsyms: tsyms,
 		tsym: tsym,
 		e: exchange,
@@ -38,7 +40,8 @@ const createRequest = (input, callback) => {
             callback(response.statusCode, {
                 jobRunID: input.id,
 				data: body,
-				result: body[tsyms] || body[tsym] || body.RAW.PRICE,
+				// This is getting messy...
+				result: body[tsyms] || body[tsym] || body.RAW.PRICE || body.RAW[fsyms][tsyms].PRICE,
                 statusCode: response.statusCode
             });
         }

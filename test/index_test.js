@@ -128,4 +128,46 @@ describe('createRequest', () => {
       });
     });
   });
+
+  context('with endpoint = pricemultifull', () => {
+    const req = {
+      id: jobID,
+      data: {
+        endpoint: "pricemultifull",
+        fsyms: "ETH",
+        tsyms: "USD"
+      }
+    };
+
+    it('returns data to the node', (done) => {
+      createRequest(req, (statusCode, data) => {
+        assert.equal(statusCode, 200);
+        assert.equal(data.jobRunID, jobID);
+		assert.isNotEmpty(data.data);
+		assert.isNumber(data.result);
+        done();
+      });
+    });
+  });
+
+  context('coin/market with endpoint = pricemultifull', () => {
+    const req = {
+      id: jobID,
+      data: {
+        endpoint: "pricemultifull",
+        coin: "ETH",
+        market: "USD"
+      }
+    };
+
+    it('returns data to the node', (done) => {
+      createRequest(req, (statusCode, data) => {
+        assert.equal(statusCode, 200);
+        assert.equal(data.jobRunID, jobID);
+		assert.isNotEmpty(data.data);
+		assert.isNumber(data.result);
+        done();
+      });
+    });
+  });
 });
